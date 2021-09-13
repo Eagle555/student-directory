@@ -26,7 +26,7 @@ def input_students
         puts "You entered typo, try again"
       end
     end
-    # ask aditional details
+    # ask additional details
     puts "Person hobby?"
     hobby = gets.chomp
     puts "Country of birth?"
@@ -74,10 +74,10 @@ def group_cohort
 end
 
 def nov_cohort
-  # display students only from November
+  # display students only from November by .select
   puts "Students from default month only"
-  @students.select! { |student| student[:cohort] == :November }
-  @students.each { |student| puts "#{student[:name]} (#{student[:cohort]} cohort)" }
+  nov_student = @students.select { |student| student[:cohort] == :November }
+  nov_student.each { |student| puts "#{student[:name]} (#{student[:cohort]} cohort)" }
 end
 
 def print_students_list
@@ -107,6 +107,10 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
+  puts "3. Sort the students by cohort"
+  puts "4. Show all current cohort students"
+  puts "5. Find students by first letter"
+  puts "6. Show all students with a name shorter than 12 characters"
   puts "9. Exit"
 end
 
@@ -115,7 +119,20 @@ def process(selection)
     when "1"
       input_students
     when "2"
+      # all students
       show_students
+    when "3"
+      # students by month
+      group_cohort if record_check
+    when "4"
+      # students from November
+      nov_cohort if record_check
+    when "5"
+      # find student by first letter
+      find_student if record_check
+    when "6"
+      # Students with less than 12 characters long
+      students_less_than_12
     when "9"
       exit
     else
@@ -130,21 +147,19 @@ def interactive_menu
   end
 end
 
-def show_students
-  print_header
+def record_check
   # skip if no students
   if !@students.empty?
-    print_students_list
-    group_cohort
-    print_footer
-    nov_cohort
-    # find student by first letter
-    find_student
-    # Students with less than 12 characters long
-    students_less_than_12
+    return true
   else 
     puts "No students on the list"
   end
+end
+
+def show_students
+  print_header
+  print_students_list if record_check
+  print_footer
 end
 
 interactive_menu
