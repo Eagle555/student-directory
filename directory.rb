@@ -33,7 +33,7 @@ def input_students
     puts "Person height?"
     height = gets.chomp
     # add the student hash to the array
-    students << {name: name, cohort: @cohort, hobby: hobby, country_of_birth: country, height: height }
+    students << { name: name, cohort: @cohort, hobby: hobby, country_of_birth: country, height: height }
     if students.count == 1
       puts "Now we have #{students.count} student"
     else
@@ -105,10 +105,15 @@ end
 #nothing happens until we call the methods
 students = input_students
 print_header
-print(students)
-group_cohort(students)
-print_footer(students)
-# find student by first letter
-find_student(students)
-# Students with less than 12 characters long
-students_less_than_12(students)
+# skip if no students
+if !students.empty?
+  print(students)
+  group_cohort(students)
+  print_footer(students)
+  # find student by first letter
+  find_student(students)
+  # Students with less than 12 characters long
+  students_less_than_12(students)
+else 
+  puts "No students on the list"
+end
