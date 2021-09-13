@@ -102,18 +102,37 @@ def print_footer(names)
   end
 end
 
-#nothing happens until we call the methods
-students = input_students
-print_header
-# skip if no students
-if !students.empty?
-  print(students)
-  group_cohort(students)
-  print_footer(students)
-  # find student by first letter
-  find_student(students)
-  # Students with less than 12 characters long
-  students_less_than_12(students)
-else 
-  puts "No students on the list"
-end
+def interactive_menu
+  students = []
+  loop do
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+    selection = gets.chomp
+    case selection
+    when "1"
+      students = input_students
+    when "2"
+      print_header
+      # skip if no students
+      if !students.empty?
+        print(students)
+        group_cohort(students)
+        print_footer(students)
+        # find student by first letter
+        find_student(students)
+        # Students with less than 12 characters long
+        students_less_than_12(students)
+      else 
+        puts "No students on the list"
+      end
+    when "9"
+      exit # this will cause the program to terminate
+    else
+      puts "I don't know what you meant, try again"
+    end
+  end
+end 
+
+interactive_menu
+
