@@ -1,9 +1,10 @@
+@students = []
+  
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
   # create an empty array
   @cohorts = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
-  students = []
   # get the first name
   name = gets #input without chomp
   name.strip!
@@ -33,29 +34,27 @@ def input_students
     puts "Person height?"
     height = gets.chomp
     # add the student hash to the array
-    students << { name: name, cohort: @cohort, hobby: hobby, country_of_birth: country, height: height }
-    if students.count == 1
-      puts "Now we have #{students.count} student"
+    @students << { name: name, cohort: @cohort, hobby: hobby, country_of_birth: country, height: height }
+    if @students.count == 1
+      puts "Now we have #{@students.count} student"
     else
-      puts "Now we have #{students.count} students"
+      puts "Now we have #{@students.count} students"
     end
     # get another name from the user
     name = gets.chomp
   end
-  # return the array of students
-  students
 end
 
-def find_student(students)
+def find_student
   puts "Find students starting with specific letter"
   puts "Enter specific letter"
   letter = gets.chomp
-  students.each { |x| puts x[:name] if x[:name].chars.first == letter}
+  @students.each { |x| puts x[:name] if x[:name].chars.first == letter}
 end
 
-def students_less_than_12(students)
+def students_less_than_12
   puts "Students with less than 12 characters long"
-  students.each { |x| puts x[:name] if x[:name].length <= 12 }
+  @students.each { |x| puts x[:name] if x[:name].length <= 12 }
 end 
 
 def print_header
@@ -64,25 +63,28 @@ def print_header
   puts "-------------".center(50)
 end
 
-def group_cohort(students)
+def group_cohort
   # display students by month
   puts "Sorted by month"
   @cohorts.each do |cohort|
-    students.each do |student|
+    @students.each do |student|
       puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:cohort] == cohort
     end
   end
-  # display students only from November
-  puts "Students from default month only"
-  students.select! { |student| student[:cohort] == :November }
-  students.each { |student| puts "#{student[:name]} (#{student[:cohort]} cohort)" }
 end
 
-def print(students)
+def nov_cohort
+  # display students only from November
+  puts "Students from default month only"
+  @students.select! { |student| student[:cohort] == :November }
+  @students.each { |student| puts "#{student[:name]} (#{student[:cohort]} cohort)" }
+end
+
+def print_students_list
   # using while loop instead
   i = 0
-  while i < students.length
-    puts "#{i.+(1)}. #{students[i][:name]} (#{students[i][:cohort]} cohort), #{students[i][:hobby]}, #{students[i][:country_of_birth]}, #{students[i][:height]}"
+  while i < @students.length
+    puts "#{i.+(1)}. #{@students[i][:name]} (#{@students[i][:cohort]} cohort), #{@students[i][:hobby]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]}"
     i += 1
   end
   
@@ -94,45 +96,56 @@ def print(students)
   
 end
 
-def print_footer(names)
-  if names.count == 1
-    puts "Overall, we have #{names.count} great student"
+def print_footer
+  if @students.count == 1
+    puts "Overall, we have #{@students.count} great student"
   else
-    puts "Overall, we have #{names.count} great students"
+    puts "Overall, we have #{@students.count} great students"
+  end
+end
+
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit"
+end
+
+def process(selection)
+  case selection
+    when "1"
+      input_students
+    when "2"
+      show_students
+    when "9"
+      exit
+    else
+      puts "I don't know what you mean, try again"
   end
 end
 
 def interactive_menu
-  students = []
   loop do
-    puts "1. Input the students"
-    puts "2. Show the students"
-    puts "9. Exit"
-    selection = gets.chomp
-    case selection
-    when "1"
-      students = input_students
-    when "2"
-      print_header
-      # skip if no students
-      if !students.empty?
-        print(students)
-        group_cohort(students)
-        print_footer(students)
-        # find student by first letter
-        find_student(students)
-        # Students with less than 12 characters long
-        students_less_than_12(students)
-      else 
-        puts "No students on the list"
-      end
-    when "9"
-      exit # this will cause the program to terminate
-    else
-      puts "I don't know what you meant, try again"
-    end
+    print_menu
+    process(gets.chomp)
   end
-end 
+end
+
+def show_students
+  print_header
+  # skip if no students
+  if !@students.empty?
+    print_students_list
+    group_cohort
+    print_footer
+    nov_cohort
+    # find student by first letter
+    find_student
+    # Students with less than 12 characters long
+    students_less_than_12
+  else 
+    puts "No students on the list"
+  end
+end
 
 interactive_menu
 
