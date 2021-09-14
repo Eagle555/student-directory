@@ -1,3 +1,5 @@
+require 'csv'
+
 class StudentDirectory
   
   def initialize
@@ -56,7 +58,7 @@ class StudentDirectory
   def find_student
     puts "Find students starting with specific letter"
     puts "Enter specific letter"
-    letter = STDIN.gets.chomp
+    letter = STDIN.gets.chomp.capitalize
     @students.each { |x| puts x[:name] if x[:name].chars.first == letter}
   end
   
@@ -175,12 +177,10 @@ class StudentDirectory
     filename = STDIN.gets.chomp
     filename = "students.csv" if filename.empty?
     # open the file for writing
-    File.open(filename, "w") do |f|
+    CSV.open(filename, "w") do |csv|
     # iterate over the array of students
       @students.each do |student|
-        student_data = [student[:name], student[:cohort], student[:hobby], student[:country_of_birth], student[:height]]
-        csv_line = student_data.join(",")
-        f.puts csv_line
+        csv << [student[:name], student[:cohort], student[:hobby], student[:country_of_birth], student[:height]]
       end
     end
     puts "File saved successfully" if File.exists?(filename)
@@ -193,11 +193,9 @@ class StudentDirectory
       filename = "students.csv" if filename.empty?
     end
     if File.exists?(filename)
-      File.open(filename, "r") do |f|
-        f.readlines.each do |line|
-          name, cohort, hobby, country, height = line.chomp.split(',')
-          add_students(name, cohort, hobby, country, height)
-        end
+      CSV.foreach(filename) do |row|
+        name, cohort, hobby, country, height = row
+        add_students(name, cohort, hobby, country, height)
       end
       puts "File loaded successfully"
     else
