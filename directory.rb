@@ -1,10 +1,9 @@
 @students = []
+@cohorts = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
   
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-  # create an empty array
-  @cohorts = [:January, :February, :March, :April, :May, :June, :July, :August, :September, :October, :November, :December]
   # get the first name
   name = gets #input without chomp
   name.strip!
@@ -112,6 +111,7 @@ def print_menu
   puts "5. Find students by first letter"
   puts "6. Show all students with a name shorter than 12 characters"
   puts "7. Save the list to students.csv"
+  puts "8. Load the list from students.csv"
   puts "9. Exit"
 end
 
@@ -137,6 +137,8 @@ def process(selection)
     when "7"
       # save to file
       save_students if record_check
+    when "8"
+      load_students
     when "9"
       exit
     else
@@ -174,6 +176,15 @@ def save_students
     student_data = [student[:name], student[:cohort], student[:hobby], student[:country_of_birth], student[:height]]
     csv_line = student_data.join(",")
     file.puts csv_line
+  end
+  file.close
+end
+
+def load_students
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+  name, cohort, hobby, country, height = line.chomp.split(',')
+    @students << {name: name, cohort: cohort.to_sym, hobby: hobby, country_of_birth: country, height: height}
   end
   file.close
 end
