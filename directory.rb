@@ -6,7 +6,7 @@ class StudentDirectory
   end
     
   def add_students(name, cohort, hobby, country, height)
-     @students << {name: name, cohort: cohort.to_sym, hobby: hobby, country_of_birth: country, height: height}
+     @students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby, country_of_birth: country, height: height}
   end
     
   def input_students
@@ -112,8 +112,8 @@ class StudentDirectory
     puts "4. Show all current cohort students"
     puts "5. Find students by first letter"
     puts "6. Show all students with a name shorter than 12 characters"
-    puts "7. Save the list to students.csv"
-    puts "8. Load the list from students.csv"
+    puts "7. Save the list to file"
+    puts "8. Load the list from file"
     puts "9. Exit"
   end
   
@@ -140,7 +140,7 @@ class StudentDirectory
         # save to file
         save_students if record_check
       when "8"
-        load_students
+        load_students("Ask for file")
       when "9"
         exit
       else
@@ -171,8 +171,11 @@ class StudentDirectory
   end
   
   def save_students
+    puts "Input file name or press enter for default 'students.csv'"
+    filename = STDIN.gets.chomp
+    filename = "students.csv" if filename.empty?
     # open the file for writing
-    file = File.open("students.csv", "w")
+    file = File.open(filename, "w")
     # iterate over the array of students
     @students.each do |student|
       student_data = [student[:name], student[:cohort], student[:hobby], student[:country_of_birth], student[:height]]
@@ -180,15 +183,25 @@ class StudentDirectory
       file.puts csv_line
     end
     file.close
+    puts "File saved successfully" if File.exists?(filename)
   end
   
-  def load_students(filename = "students.csv")
-    file = File.open(filename, "r")
-    file.readlines.each do |line|
-    name, cohort, hobby, country, height = line.chomp.split(',')
-      add_students(name, cohort, hobby, country, height)
+  def load_students(filename)
+    if filename == "Ask for file"
+      filename = STDIN.gets.chomp
+      filename = "students.csv" if filename.empty?
     end
-    file.close
+    if File.exists?(filename)
+      file = File.open(filename, "r")
+      file.readlines.each do |line|
+      name, cohort, hobby, country, height = line.chomp.split(',')
+        add_students(name, cohort, hobby, country, height)
+      end
+      file.close
+      puts "File loaded successfully"
+    else
+      puts "Sorry, #{filename} doesn't exist."
+    end
   end
   
   def try_load_students
