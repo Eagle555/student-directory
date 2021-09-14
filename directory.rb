@@ -175,29 +175,30 @@ class StudentDirectory
     filename = STDIN.gets.chomp
     filename = "students.csv" if filename.empty?
     # open the file for writing
-    file = File.open(filename, "w")
+    File.open(filename, "w") do |f|
     # iterate over the array of students
-    @students.each do |student|
-      student_data = [student[:name], student[:cohort], student[:hobby], student[:country_of_birth], student[:height]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      @students.each do |student|
+        student_data = [student[:name], student[:cohort], student[:hobby], student[:country_of_birth], student[:height]]
+        csv_line = student_data.join(",")
+        f.puts csv_line
+      end
     end
-    file.close
     puts "File saved successfully" if File.exists?(filename)
   end
   
   def load_students(filename)
     if filename == "Ask for file"
+      puts "Input file name or press enter for default 'students.csv'"
       filename = STDIN.gets.chomp
       filename = "students.csv" if filename.empty?
     end
     if File.exists?(filename)
-      file = File.open(filename, "r")
-      file.readlines.each do |line|
-      name, cohort, hobby, country, height = line.chomp.split(',')
-        add_students(name, cohort, hobby, country, height)
+      File.open(filename, "r") do |f|
+        f.readlines.each do |line|
+          name, cohort, hobby, country, height = line.chomp.split(',')
+          add_students(name, cohort, hobby, country, height)
+        end
       end
-      file.close
       puts "File loaded successfully"
     else
       puts "Sorry, #{filename} doesn't exist."
