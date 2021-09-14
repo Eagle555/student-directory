@@ -5,7 +5,7 @@ def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
   # get the first name
-  name = gets #input without chomp
+  name = STDIN.gets #input without chomp
   name.strip!
   # while the name is not empty, repeat this code
   while !name.empty? do
@@ -13,7 +13,7 @@ def input_students
     puts "Which cohort? (press enter for November)"
     loop do 
       # check for typo
-      @cohort = gets.chomp.capitalize.to_sym
+      @cohort = STDIN.gets.chomp.capitalize.to_sym
       if @cohorts.include?(@cohort)
         break
       # assign default value
@@ -27,11 +27,11 @@ def input_students
     end
     # ask additional details
     puts "Person hobby?"
-    hobby = gets.chomp
+    hobby = STDIN.gets.chomp
     puts "Country of birth?"
-    country = gets.chomp
+    country = STDIN.gets.chomp
     puts "Person height?"
-    height = gets.chomp
+    height = STDIN.gets.chomp
     # add the student hash to the array
     @students << { name: name, cohort: @cohort, hobby: hobby, country_of_birth: country, height: height }
     if @students.count == 1
@@ -40,14 +40,14 @@ def input_students
       puts "Now we have #{@students.count} students"
     end
     # get another name from the user
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
 end
 
 def find_student
   puts "Find students starting with specific letter"
   puts "Enter specific letter"
-  letter = gets.chomp
+  letter = STDIN.gets.chomp
   @students.each { |x| puts x[:name] if x[:name].chars.first == letter}
 end
 
@@ -149,7 +149,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -180,8 +180,8 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort, hobby, country, height = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym, hobby: hobby, country_of_birth: country, height: height}
@@ -189,5 +189,18 @@ def load_students
   file.close
 end
 
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) # if it exists
+    load_students(filename)
+     puts "Loaded #{@students.count} from #{filename}"
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit # quit the program
+  end
+end
+
+try_load_students
 interactive_menu
 
