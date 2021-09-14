@@ -117,6 +117,7 @@ class StudentDirectory
     puts "7. Save the list to file"
     puts "8. Load the list from file"
     puts "9. Exit"
+    puts "source - Show me source code"
   end
   
   def process(selection)
@@ -145,6 +146,8 @@ class StudentDirectory
         load_students("Ask for file")
       when "9"
         exit
+      when "source"
+        code
       else
         puts "I don't know what you mean, try again"
     end
@@ -214,10 +217,13 @@ class StudentDirectory
     end
   end
 
+  def code
+    puts File.read("directory.rb")
+  end
+
 end
 
 directory = StudentDirectory.new
-
 directory.try_load_students
 directory.interactive_menu
 
