@@ -92,16 +92,9 @@ class StudentDirectory
     # using while loop instead
     i = 0
     while i < @students.length
-      puts "#{i.+(1)}. #{@students[i][:name]} (#{@students[i][:cohort]} cohort), #{@students[i][:hobby]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]}"
+      puts "#{i.+(1)}. #{@students[i][:name]} (#{@students[i][:cohort]} cohort), hobby: #{@students[i][:hobby]}, place of birth: #{@students[i][:country_of_birth]}, height: #{@students[i][:height]}"
       i += 1
     end
-    
-=begin
-    students.each do |student|
-      puts "#{students.index(student).+(1)}. #{student[:name]} (#{student[:cohort]} cohort)"
-    end
-=end
-    
   end
   
   def print_footer
@@ -200,13 +193,12 @@ class StudentDirectory
   
   def try_load_students
     filename = ARGV.first # first argument from the command line
-    return if filename.nil? # get out of the method if it isn't given
+    filename ||= "students.csv" # get out of the method if it isn't given
     if File.exists?(filename) # if it exists
       load_students(filename)
-       puts "Loaded #{@students.count} from #{filename}"
-    else # if it doesn't exist
+      puts "Loaded #{@students.count} from #{filename}"
+    else # if it doesn't exist, inform but continue 
       puts "Sorry, #{filename} doesn't exist."
-      exit # quit the program
     end
   end
 
